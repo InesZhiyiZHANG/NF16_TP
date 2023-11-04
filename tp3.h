@@ -10,6 +10,8 @@ struct Transaction {
 };
 typedef struct Transaction T_Transaction;
 
+
+
 struct Block {
     int idBloc;
     char *dateBloc; // date du bloc sous la forme AAAAMMJJ (ex : 20231009 pour le 09/10/2023)
@@ -17,6 +19,7 @@ struct Block {
     struct Block *suivant;
 };
 typedef struct Block T_Block;//les transaction de toutes les etudiants
+
 
 
 typedef T_Block *BlockChain; //la tête de chaîne de T_Block

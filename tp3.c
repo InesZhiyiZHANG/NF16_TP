@@ -7,23 +7,7 @@
 
 
 
-/* ********************************
- * Création et initialisation Bloc
- ******************************** */
-T_Block *creerBloc(int id, char* date){
-    T_Block *nouveauBloc = malloc(sizeof(T_Block));
-    if (nouveauBloc != NULL) {
-        // l'allocation mémoire s'est bien passée
-        nouveauBloc->dateBloc = malloc(strlen(date) + 1);
-        // reserver la space pour '\0'
-        strcpy( nouveauBloc->dateBloc,date );
-        nouveauBloc->idBloc = id;
-        nouveauBloc->listeTransactions = NULL; //la tête d'une liste de transactions
-        nouveauBloc->suivant = NULL;//le nouveaubloc est le dernier
-    }
 
-    return nouveauBloc;
-}
 
 
 
@@ -53,7 +37,29 @@ T_Transaction *ajouterTransaction(int idEtu, float montant, char *descr, T_Trans
     T_Transaction *tempT = creerTransaction(idEtu, montant, descr); //créer une nouvel transaction « tempT »
     tempT->suivant = listeTransaction; //ajouter la nouvel transaction
     //listeTransaction = tempT; //faire de « tempT » la tête de listeTransaction
+
     return tempT;
+}
+
+
+
+
+/* ********************************
+ * Création et initialisation Bloc
+ ******************************** */
+T_Block *creerBloc(int id, char* date){
+    T_Block *nouveauBloc = malloc(sizeof(T_Block));
+    if (nouveauBloc != NULL) {
+        // l'allocation mémoire s'est bien passée
+        nouveauBloc->dateBloc = malloc(strlen(date) + 1);
+        // reserver la space pour '\0'
+        strcpy( nouveauBloc->dateBloc,date );
+        nouveauBloc->idBloc = id;
+        nouveauBloc->listeTransactions = NULL; //la tête d'une liste de transactions
+        nouveauBloc->suivant = NULL;//le nouveaubloc est le dernier
+    }
+
+    return nouveauBloc;
 }
 
 
@@ -69,15 +75,27 @@ BlockChain ajouterBlock(BlockChain bc){
     T_Block *pB = bc;
     while(pB != NULL){
         if(strcmp(date, pB->dateBloc) == 0){
-            printf("Cette date existe déjà !\n");
+            printf("Cette date existe deja !\n");
             return bc;
         }
         pB = pB->suivant;
+    }//verifier si le data existe
+
+    T_Block *tempB = creerBloc(1, date); //créer un nouveau bloc « tempB »
+    if (bc == NULL) {
+
+        return tempB;
     }
-    T_Block *tempB = creerBloc(bc->idBloc+1, date); //créer un nouveau bloc « tempB »
-    tempB->suivant = bc; //ajouter le nouveau bloc
-    //bc = tempB; //faire de « tempB » la tête de BlockChain
-    return tempB;
+
+    // Sinon, attachez le nouveau bloc à la fin de la liste existante
+    T_Block *current = bc;
+    while (current->suivant != NULL) {
+        current = current->suivant;
+    }
+    current->suivant = tempB;
+
+    printf("Succès !\n");
+    return bc;
 }
 
 
@@ -117,30 +135,9 @@ float soldeEtudiant(int idEtu, BlockChain bc){
 void crediter(int idEtu, float montant, char *descr, BlockChain bc){
     T_Block *p = bc;//确定指针指向该天,且不改变
     p->listeTransactions = ajouterTransaction(idEtu, montant, descr, bc->listeTransactions);
-//??????怎么确定是该天的 //应该是我们只会在最新的那一天交易，而不会在之前的日期这么做，即只会在BlockChain的头节点更新数据
+
+
 }
-
-
-
-
-T_Transaction *ajouterTransaction(int idEtu, float montant, char *descr, T_Transaction *listeTransaction) {
-    T_Transaction *tempT = creerTransaction(idEtu, montant, descr);
-    tempT->suivant = listeTransaction;//ajouter le nouveau transaction
-    listeTransaction = tempT;
-    //printf("rtudiant %d montant %.2f \n",idEtu, montant)
-    return NULL;
-}
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -148,8 +145,18 @@ T_Transaction *ajouterTransaction(int idEtu, float montant, char *descr, T_Trans
  * 6.	Paiement d'un repas :
  ******************************** */
 int payer(int idEtu, float montant, char *descr, BlockChain bc){
-    ajouterTransaction(idEtu, montant, descr, bc->listeTransactions);
-    return 1;
+    T_Block *p = bc;//确定指针指向该天,且不改变
+    float money = soldeEtudiant(idEtu,bc);
+    if( montant > money){
+        return 0;
+    }
+    else{
+            montant = - montant;
+            p->listeTransactions = ajouterTransaction(idEtu, montant, descr, bc->listeTransactions);
+//??????怎么确定是该天的 //应该是我们只会在最新的那一天交易，而不会在之前的日期这么做，即只会在BlockChain的头节点更新数据
+            return 1;
+    }
+
 }
 
 
@@ -164,7 +171,7 @@ void consulter(int idEtu, BlockChain bc){
             printf("%d", idEtu); //imprimer l'identité d'étudiant
             printf("%s", pB->dateBloc); //imprimer la date
             printf("%f", pT->montant); //imprimer le montant
-            print("%s", pT->description); //imprimer la description
+            printf("%s", pT->description); //imprimer la description
             pT = pT->suivant;
         }
     pB = pB->suivant;
@@ -177,8 +184,10 @@ void consulter(int idEtu, BlockChain bc){
  * 8.	Transfert de EATCoins entre deux étudiants :
  ******************************** */
 int transfert(int idSource, int idDestination, float montant, char *descr, BlockChain bc){
-    ajouterTransaction(idSource, -montant, descr, bc->listeTransactions);
-    ajouterTransaction(idDestination, montant, descr, bc->listeTransactions);
+    T_Block *p = bc;//确定指针指向该天,且不改变
+    p->listeTransactions =ajouterTransaction(idSource, -montant, descr, bc->listeTransactions);
+    p->listeTransactions =ajouterTransaction(idDestination, montant, descr, bc->listeTransactions);
+
     return 1;
 }
 

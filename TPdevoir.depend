@@ -1,0 +1,14 @@
+# depslib dependency file v1.0
+1699105765 source:d:\program files (x86)\codeblocks\tp\projet\nf16_tp\main.c
+	<stdio.h>
+	<stdlib.h>
+	"tp3.h"
+
+1699100311 d:\program files (x86)\codeblocks\tp\projet\nf16_tp\tp3.h
+
+1699105434 source:d:\program files (x86)\codeblocks\tp\projet\nf16_tp\tp3.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	"tp3.h"
+

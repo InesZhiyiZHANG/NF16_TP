@@ -3,9 +3,17 @@
 #include "tp3.h"
 
 int main(){
-
+    // ma_chaine_de_blocs->dateBloc = "20231104";
+    //ma_chaine_de_blocs->idBloc = 1;
+   // ma_chaine_de_blocs->listeTransactions = NULL;
+    //ma_chaine_de_blocs->suivant = NULL;
     BlockChain ma_chaine_de_blocs = NULL;
-
+    //ma_chaine_de_blocs->idBloc = 0;
+    ma_chaine_de_blocs = ajouterBlock( ma_chaine_de_blocs );
+    ma_chaine_de_blocs ->suivant = NULL;
+   // !!!!!!+++++++++++++++++++++++++++++此处建立了新节点
+   // ma_chaine_de_blocs->listeTransactions = malloc(sizeof(T_Transaction));
+    viderBuffer();
     // ============= MENU UTILISATEUR ============= */
     char choix = '0';
     while (choix != '8'){
@@ -18,6 +26,7 @@ int main(){
         printf("\n6. Payer un repas");
         printf("\n7. Transferer des EATCoins entre deux etudiants");
         printf("\n8. Quitter");
+        printf("\n9.Ajouter un nouveau data");
         printf("\n======================================");
         printf("\n   Votre choix ? ");
 
@@ -123,9 +132,11 @@ int main(){
 
             case '4' :
             {
+                    viderBuffer();
                     int id;
                     printf("quel est le ID numbre d'etudiant que vous voudrez voir ? ");
                     scanf("%d",&id);
+                    viderBuffer();
                     int count_etu = 0;
                     T_Block* p = ma_chaine_de_blocs;
                     while ( p != NULL)
@@ -146,7 +157,10 @@ int main(){
                         p = p->suivant;
                     }
                     if(count_etu == 0)
+                    {
                         printf("le etudiant (ID==%d) n'a pas ete trouve", id);
+                        break;
+                    }
                     break;
             }
 
@@ -156,16 +170,16 @@ int main(){
                     float montant;
                     char descr[20];
 
-                    printf("Entrez ID de l'étudiant : ");
+                    printf("Entrez ID de l'etudiant : ");
                     scanf("%d", &id);
-                    printf("Entrez le montant à créditer : ");
+                    printf("Entrez le montant a crediter : ");
                     scanf("%f", &montant);
-                    printf("Entrez une description : ");
-                    viderBuffer(); // 清空输入缓冲区
-                    fgets(descr, sizeof(descr), stdin);
-
+                    //printf("Entrez une description : ");
+                    //viderBuffer(); // 清空输入缓冲区
+                    //fgets(descr, sizeof(descr), stdin);
+//11.4删除已经决定是充值：
                     // 调用 crediter 函数来增加学生的余额
-                    crediter(id, montant, descr, ma_chaine_de_blocs);
+                    crediter(id, montant, "credite", ma_chaine_de_blocs);
 
                     printf("Crédit ajouté avec succès.\n");
                     break;
@@ -173,12 +187,43 @@ int main(){
 
             case '6' ://n6. Payer un repas
             {
+                int id;
+                float montant;
+                char descr[20];
+
+                printf("Entrez ID de l'etudiant : ");
+                scanf("%d", &id);
+                printf("Entrez le montant a payer : (positive)");
+                scanf("%f", &montant);
+                //printf("Entrez une description : ");
+                //viderBuffer(); // 清空输入缓冲区
+            //fgets(descr, sizeof(descr), stdin);
+//11.4删除已经决定是充值：
+                // 调用 crediter 函数来增加学生的余额
+                if ( payer(id, montant, "payer", ma_chaine_de_blocs)){
+                    printf("\nle paiement a ete effetue avec succes.\n");
+                }
+                else{
+                    printf("\nle solde de l'etudiant est insuffisant !\n ");
+                }
                 break;
             }
 
             case '7' :
             {
-                    break;
+                int idSource, idDestination;
+                float montant;
+                char descr[20];
+
+                printf("Entrez ID des etudiants : (ex:1 2) ");
+                scanf("%d %d", &idSource,&idDestination);
+                printf("Entrez le montant a exchange : (positive)");
+                scanf("%f", &montant);
+
+
+
+                transfert(idSource, idDestination, montant,"exchange",ma_chaine_de_blocs);
+                break;
             }
 
             case '8' :
@@ -186,6 +231,14 @@ int main(){
                 printf("\n======== PROGRAMME TERMINE ========\n");
                 break;
             }
+
+            case '9' :
+            {
+                ma_chaine_de_blocs = ajouterBlock( ma_chaine_de_blocs );
+
+                break;
+            }
+
 
             default : printf("\n\nERREUR : votre choix n'est valide ! ");
         }
