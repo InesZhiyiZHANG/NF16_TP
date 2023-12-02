@@ -1,0 +1,29 @@
+# depslib dependency file v1.0
+1701468231 source:d:\program files (x86)\codeblocks\tp\projet\nf16_tp_04\main.c
+	<stdio.h>
+	<stdlib.h>
+	"TP04.h"
+
+1701469175 d:\program files (x86)\codeblocks\tp\projet\nf16_tp_04\tp04.h
+
+1701468232 source:d:\文件及其他\06、編程項目\c_project\nf16_tp\nf16_tp_04\main.c
+	<stdio.h>
+	<stdlib.h>
+	"TP04.h"
+
+1701514642 d:\文件及其他\06、編程項目\c_project\nf16_tp\nf16_tp_04\tp04.h
+
+1701529583 source:d:\program files (x86)\codeblocks\tp\projet\nf16_tp_04(1)\nf16_tp_04\main.c
+	<stdio.h>
+	<stdlib.h>
+	"TP04.h"
+
+1701529641 d:\program files (x86)\codeblocks\tp\projet\nf16_tp_04(1)\nf16_tp_04\tp04.h
+
+1701529641 source:d:\program files (x86)\codeblocks\tp\projet\nf16_tp_04(1)\nf16_tp_04\tp04.c
+	<stdio.h>
+	<stdlib.h>
+	<string.h>
+	<math.h>
+	"TP04.h"
+
